@@ -26,6 +26,11 @@ namespace Crossy_Man
         public int carSpeed = GameScreen.randGen.Next(5, 15);
         public int nextCar = 0;
 
+        public List<Log> logs = new List<Log>();
+        public int logDirection = GameScreen.randGen.Next(0, 2) == 1 ? 1 : -1;
+        public int logSpeed = GameScreen.randGen.Next(1, 8);
+        public int nextLog = 0;
+
         public Layer(int _y, int _type, int _id)
         {
             y = _y;
@@ -55,6 +60,16 @@ namespace Crossy_Man
             {
                 nextCar = GameScreen.randGen.Next(200, 600);
                 cars.Add(new Car(carDirection == 1 ? -100 : 1380, y + 5, 100, carDirection, carSpeed, carType));
+            }
+        }
+
+        public void makeLogs()
+        {
+            nextLog -= logSpeed;
+            if (nextLog < 0)
+            {
+                nextLog = GameScreen.randGen.Next(200, 400);
+                logs.Add(new Log(logDirection == 1 ? -100 : 1380, y + 10, GameScreen.randGen.Next(70, 190), logSpeed, logDirection));
             }
         }
     }

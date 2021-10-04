@@ -17,5 +17,10 @@ namespace Crossy_Man
             speed = _speed;
             direction = _direction;
         }
+
+        public void Move()
+        {
+            x += speed * direction;
+        }
     }
 }

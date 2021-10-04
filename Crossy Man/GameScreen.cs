@@ -130,6 +130,19 @@ namespace Crossy_Man
                         }
                     }
                 }
+                else if (l.type == 2)
+                {
+                    l.makeLogs();
+                    foreach (Log log in l.logs)
+                    {
+                        log.Move();
+                        Rectangle logRect = new Rectangle(log.x, log.y, log.width, 40);
+                        if (logRect.IntersectsWith(new Rectangle(p.x, p.y, p.size, p.size)))
+                        {
+                            p.x += log.speed * log.direction;
+                        }
+                    }
+                }
             }
 
             // Update Camera
@@ -196,6 +209,13 @@ namespace Crossy_Man
                             carBrush.Color = Color.Yellow;
                         }
                         e.Graphics.FillRectangle(carBrush, car.x, car.y + cameraY, car.width, 50);
+                    }
+                }
+                else if(l.type == 2)
+                {
+                    foreach(Log log in l.logs)
+                    {
+                        e.Graphics.FillRectangle(new SolidBrush(Color.Brown), log.x, log.y + cameraY, log.width, 40);
                     }
                 }
             }
