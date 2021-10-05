@@ -69,6 +69,8 @@ namespace Crossy_Man
 
         void setupGame()
         {
+            this.Focus();
+
             // Reset layers
             maxLayerY = this.Height - 60;
             maxLayerID = 0;
@@ -266,8 +268,15 @@ namespace Crossy_Man
                     retryButton.Visible = true;
                     menuButton.Visible = true;
                 }
+                retryButton.Enabled = true;
+                menuButton.Enabled = true;
             }
-
+            else
+            {
+                retryButton.Enabled = false;
+                menuButton.Enabled = false;
+            }
+            
 
             // Refresh
             this.Refresh();
@@ -359,11 +368,27 @@ namespace Crossy_Man
         private void retryButton_Click(object sender, EventArgs e)
         {
             setupGame();
+            this.Focus();
         }
 
         private void menuButton_Click(object sender, EventArgs e)
         {
+            Form f = this.FindForm();
+            f.Controls.Remove(this);
+            MenuScreen ms = new MenuScreen();
+            f.Controls.Add(ms);
+        }
 
+        private void retryButton_Enter(object sender, EventArgs e)
+        {
+            retryButton.FlatAppearance.BorderSize = 10;
+            menuButton.FlatAppearance.BorderSize = 5;
+        }
+
+        private void menuButton_Enter(object sender, EventArgs e)
+        {
+            retryButton.FlatAppearance.BorderSize = 5;
+            menuButton.FlatAppearance.BorderSize = 10;
         }
     }
 }

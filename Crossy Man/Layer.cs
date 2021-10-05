@@ -38,8 +38,8 @@ namespace Crossy_Man
 
             if (type == 0)
             {
-                int treesLeft = GameScreen.randGen.Next(1, 4);
-                int treesRight = GameScreen.randGen.Next(1, 4);
+                int treesLeft = GameScreen.randGen.Next(1, 5);
+                int treesRight = GameScreen.randGen.Next(1, 5);
 
                 for (int i = 0; i < treesLeft; i++)
                 {

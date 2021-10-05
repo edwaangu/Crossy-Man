@@ -70,6 +70,7 @@ namespace Crossy_Man
             this.retryButton.Text = "Retry";
             this.retryButton.UseVisualStyleBackColor = false;
             this.retryButton.Click += new System.EventHandler(this.retryButton_Click);
+            this.retryButton.Enter += new System.EventHandler(this.retryButton_Enter);
             // 
             // menuButton
             // 
@@ -87,14 +88,15 @@ namespace Crossy_Man
             this.menuButton.Text = "Menu";
             this.menuButton.UseVisualStyleBackColor = false;
             this.menuButton.Click += new System.EventHandler(this.menuButton_Click);
+            this.menuButton.Enter += new System.EventHandler(this.menuButton_Enter);
             // 
             // GameScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(236)))), ((int)(((byte)(9)))));
-            this.Controls.Add(this.menuButton);
             this.Controls.Add(this.retryButton);
+            this.Controls.Add(this.menuButton);
             this.Controls.Add(this.scoreLabel);
             this.DoubleBuffered = true;
             this.Name = "GameScreen";
