@@ -13,7 +13,6 @@ namespace Crossy_Man
         0 - Regular Ground
         1 - Road
         2 - River
-        3 - Train Tracks
          
          */
         public int y, type, id;
@@ -51,6 +50,25 @@ namespace Crossy_Man
                     trees.Add(new Tree(1280 - 60 - i * 60 + 10, y + 10));
                 }
             }
+            else if(type == 1)
+            {
+                int theCarX = 0;
+                while(theCarX < 1280)
+                {
+                    cars.Add(new Car(theCarX, y + 5, 100, carDirection, carSpeed, carType));
+                    theCarX += GameScreen.randGen.Next(200, 600);
+                }
+            }
+            else if (type == 2)
+            {
+                int theLogX = 0;
+                while (theLogX < 1280)
+                {
+                    int logWidth = GameScreen.randGen.Next(70, 190);
+                    logs.Add(new Log(theLogX, y + 10, logWidth, logSpeed, logDirection));
+                    theLogX += GameScreen.randGen.Next(30 + logWidth, 300 + logWidth);
+                }
+            }
         }
 
         public void makeCars()
@@ -61,6 +79,11 @@ namespace Crossy_Man
                 nextCar = GameScreen.randGen.Next(200, 600);
                 cars.Add(new Car(carDirection == 1 ? -100 : 1380, y + 5, 100, carDirection, carSpeed, carType));
             }
+
+            if(cars[0].x < -200 || cars[0].x > 1480)
+            {
+                cars.RemoveAt(0);
+            }
         }
 
         public void makeLogs()
@@ -68,8 +91,14 @@ namespace Crossy_Man
             nextLog -= logSpeed;
             if (nextLog < 0)
             {
-                nextLog = GameScreen.randGen.Next(200, 400);
-                logs.Add(new Log(logDirection == 1 ? -100 : 1380, y + 10, GameScreen.randGen.Next(70, 190), logSpeed, logDirection));
+                int logWidth = GameScreen.randGen.Next(70, 190);
+                nextLog = GameScreen.randGen.Next(30 + logWidth, 300 + logWidth);
+                logs.Add(new Log(logDirection == 1 ? -logWidth : 1280 + logWidth, y + 10, logWidth, logSpeed, logDirection));
+            }
+
+            if (logs[0].x < -300 || logs[0].x > 1580)
+            {
+                logs.RemoveAt(0);
             }
         }
     }
