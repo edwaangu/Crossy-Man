@@ -33,7 +33,10 @@ namespace Crossy_Man
 
         private void MenuScreen_Load(object sender, EventArgs e)
         {
+
+            Form f = this.FindForm();
             this.Focus(); // focus
+            this.Location = new Point((f.Width - 1280) / 2, (f.Height - 720) / 2);
         }
 
         private void playButton_Enter(object sender, EventArgs e)
