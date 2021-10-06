@@ -33,7 +33,7 @@ namespace Crossy_Man
 
         private void MenuScreen_Load(object sender, EventArgs e)
         {
-            this.Focus();
+            this.Focus(); // focus
         }
 
         private void playButton_Enter(object sender, EventArgs e)
