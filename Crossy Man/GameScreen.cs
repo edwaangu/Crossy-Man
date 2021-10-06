@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Media;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,11 @@ namespace Crossy_Man
 {
     public partial class GameScreen : UserControl
     {
+        // Sounds
+        SoundPlayer jumpSound = new SoundPlayer(Properties.Resources.jump);
+        SoundPlayer deathSound = new SoundPlayer(Properties.Resources.death);
+        int deathSoundPlayed = 0;
+
         // Randgen
         public static Random randGen = new Random();
 
@@ -25,6 +31,13 @@ namespace Crossy_Man
         // Player
         Player p = new Player(620, 625, 40, 60);
         int maxPlayerY = 625;
+        bool jumping = false;
+        int pgravity = -10;
+        int pgravityY = 0;
+        int distY = 0;
+        int distX = 0;
+        int distXdir = 0;
+        int distYdir = 0;
 
         // Bird
         int birdY = -100;
@@ -70,6 +83,7 @@ namespace Crossy_Man
         void setupGame()
         {
             this.Focus();
+            deathSoundPlayed = 0;
 
             // Reset layers
             maxLayerY = this.Height - 60;
@@ -104,6 +118,52 @@ namespace Crossy_Man
             menuButton.Visible = false;
         }
 
+        bool checkForDie()
+        {
+            bool hasDied = false;
+
+            foreach (Layer l in layers)
+            {
+                if (l.type == 1)
+                {
+                    // Create more cars if necessary
+                    foreach (Car c in l.cars)
+                    {
+                        // Check if the car collides with the player
+                        Rectangle carRect = new Rectangle(c.x, c.y, c.width, 50);
+                        if (carRect.IntersectsWith(new Rectangle(p.x, p.y, p.size, p.size)))
+                        {
+                            hasDied = true;
+                        }
+                    }
+                }
+                else if (l.type == 2)
+                {
+                    // Create more logs if necessary
+                    bool deadWater = true;
+                    foreach (Log log in l.logs)
+                    {
+                        // Check if the log is colliding with the player, if so, move the player along
+                        if (!gameover)
+                        {
+                            Rectangle logRect = new Rectangle(log.x, log.y, log.width, 40);
+                            if (logRect.IntersectsWith(new Rectangle(p.x, p.y, p.size, p.size)))
+                            {
+                                deadWater = false;
+                            }
+                        }
+                    }
+                    Rectangle layerRect = new Rectangle(0, l.y, this.Width, 60);
+                    if (layerRect.IntersectsWith(new Rectangle(p.x, p.y, p.size, p.size)) && deadWater){
+                        // If the player is not colliding with a log but with the water, then result in a game over
+                        hasDied = true;
+                    }
+                }
+            }
+
+            return hasDied;
+        }
+
         public GameScreen()
         {
             InitializeComponent();
@@ -126,13 +186,13 @@ namespace Crossy_Man
             // Update layers
             foreach (Layer l in layers)
             {
-                if(l.type == 0)
+                if (l.type == 0 && !gameover)
                 {
                     // Check to make sure the player can't run into trees
-                    foreach(Tree t in l.trees)
+                    foreach (Tree t in l.trees)
                     {
                         Rectangle treeRect = new Rectangle(t.x, t.y, 40, 40);
-                        if(treeRect.IntersectsWith(new Rectangle(p.x + p.speed, p.y, p.size, p.size)))
+                        if (treeRect.IntersectsWith(new Rectangle(p.x + p.speed, p.y, p.size, p.size)))
                         {
                             p.canMoveRight = false;
                         }
@@ -150,27 +210,20 @@ namespace Crossy_Man
                         }
                     }
                 }
-                else if(l.type == 1)
+                else if (l.type == 1)
                 {
                     // Create more cars if necessary
                     l.makeCars();
-                    foreach(Car c in l.cars)
+                    foreach (Car c in l.cars)
                     {
                         // Move the car
                         c.Move();
-
-                        // Check if the car collides with the player, resulting in a gameover
-                        Rectangle carRect = new Rectangle(c.x, c.y, c.width, 50);
-                        if(carRect.IntersectsWith(new Rectangle(p.x, p.y, p.size, p.size))){
-                            gameover = true;
-                        }
                     }
                 }
                 else if (l.type == 2)
                 {
                     // Create more logs if necessary
                     l.makeLogs();
-
                     bool deadFromWater = true;
                     foreach (Log log in l.logs)
                     {
@@ -178,22 +231,18 @@ namespace Crossy_Man
                         log.Move();
 
                         // Check if the log is colliding with the player, if so, move the player along
-                        Rectangle logRect = new Rectangle(log.x, log.y, log.width, 40);
-                        if (logRect.IntersectsWith(new Rectangle(p.x, p.y, p.size, p.size)))
+                        if (!gameover)
                         {
-                            if (deadFromWater)
+                            Rectangle logRect = new Rectangle(log.x, log.y, log.width, 40);
+                            if (logRect.IntersectsWith(new Rectangle(p.x, p.y, p.size, p.size)))
                             {
-                                p.x += log.speed * log.direction;
+                                if (deadFromWater && distXdir == 0 && distYdir == 0)
+                                {
+                                    p.x += log.speed * log.direction;
+                                }
+                                deadFromWater = false;
                             }
-                            deadFromWater = false;
                         }
-                    }
-
-                    Rectangle layerRect = new Rectangle(0, l.y, this.Width, 60);
-                    if (layerRect.IntersectsWith(new Rectangle(p.x, p.y, p.size, p.size)) && deadFromWater)
-                    {
-                        // If the player is not colliding with a log but with the water, then result in a game over
-                        gameover = true;
                     }
                 }
             }
@@ -205,21 +254,33 @@ namespace Crossy_Man
                 cameraY++;
 
                 // If the player exceeds a certain distance move the camera down quickly to keep up
-                while(cameraY + p.y < 300)
+                if(cameraY + p.y < 300)
                 {
                     cameraY += 10;
                 }
+                if (cameraY + p.y < 50)
+                {
+                    cameraY += 60;
+                }
 
                 // Result in a game-over if the player's middle touches the bottom
-                if(cameraY + p.y >= this.Height - (p.size / 2))
+                if (cameraY + p.y >= this.Height - (p.size / 2))
                 {
                     gameover = true;
+                    if (deathSoundPlayed == 0)
+                    {
+                        deathSoundPlayed = 1;
+                    }
                 }
 
                 // Result in a game-over if the player goes off the screen horizontally (only happens when on a log)
                 if(p.x + p.size < 0 || p.x > this.Width)
                 {
                     gameover = true;
+                    if (deathSoundPlayed == 0)
+                    {
+                        deathSoundPlayed = 1;
+                    }
                 }
             }
 
@@ -233,7 +294,7 @@ namespace Crossy_Man
             }
 
             // Remove a layer if beyond the screen
-            if (layers[0].y + cameraY > this.Height)
+            if (layers[0].y + cameraY > this.Height + 120)
             {
                 layers.RemoveAt(0);
             }
@@ -249,6 +310,7 @@ namespace Crossy_Man
             // Game-Over related stuff
             if (gameover)
             {
+                // Check if we could use the bird due to the player going off the screen vertically
                 if (cameraY + p.y >= this.Height - (p.size / 2))
                 {
                     birdY += 50;
@@ -275,6 +337,39 @@ namespace Crossy_Man
             {
                 retryButton.Enabled = false;
                 menuButton.Enabled = false;
+            }
+
+            if (jumping)
+            {
+                pgravityY += pgravity;
+                pgravity++;
+                distX += 6 * distXdir;
+                distY += 6 * distYdir;
+
+                if(pgravityY > 0)
+                {
+                    pgravity = -5;
+                    pgravityY = 0;
+                    jumping = false;
+                    distXdir = 0;
+                    distYdir = 0;
+                    distX = 0;
+                    distY = 0;
+                }
+            }
+            if((distXdir == 0 && distYdir == 0) && checkForDie())
+            {
+                gameover = true;
+                if (deathSoundPlayed == 0)
+                {
+                    deathSoundPlayed = 1;
+                }
+            }
+
+            if(deathSoundPlayed == 1)
+            {
+                deathSoundPlayed = 2;
+                deathSound.Play();
             }
             
 
@@ -303,55 +398,81 @@ namespace Crossy_Man
 
                 e.Graphics.FillRectangle(c, new Rectangle(0, l.y + cameraY, this.Width, 60));
 
-                if(l.type == 0)
+            }
+
+            for(int i = layers.Count - 1;i > 0;i--)
+            {
+                if (layers[i].type == 0)
                 {
                     // Trees
-                    foreach(Tree t in l.trees)
+                    foreach (Tree t in layers[i].trees)
                     {
-                        e.Graphics.FillRectangle(new SolidBrush(Color.ForestGreen), t.x, t.y + cameraY, 40, 40);
+                        e.Graphics.DrawImage(Properties.Resources.tree, t.x + 3, t.y + cameraY - 37);
                     }
                 }
-                else if(l.type == 1)
+                else if (layers[i].type == 1)
                 {
                     // Cars
-                    foreach(Car car in l.cars)
+                    foreach (Car car in layers[i].cars)
                     {
-                        // Show a different color for each type of car
-                        SolidBrush carBrush = new SolidBrush(Color.Red);
-                        if(car.type == 1)
+                        // Show a different car for each type of car
+                        if (car.type == 1)
                         {
-                            carBrush.Color = Color.Blue;
+                            e.Graphics.DrawImage(Properties.Resources.bluecar, new Rectangle(car.x + (77 * (car.direction == 1 ? 0 : 1)), car.y - 32 + cameraY, 77 * car.direction, 77));
                         }
                         else if (car.type == 2)
                         {
-                            carBrush.Color = Color.Yellow;
+                            e.Graphics.DrawImage(Properties.Resources.yellowcar, new Rectangle(car.x + (105 * (car.direction == 1 ? 0 : 1)), car.y - 25 + cameraY, 105 * car.direction, 70));
                         }
-                        e.Graphics.FillRectangle(carBrush, car.x, car.y + cameraY, car.width, 50);
+                        else
+                        {
+                            e.Graphics.DrawImage(Properties.Resources.redcar, new Rectangle(car.x + (105 * (car.direction == 1 ? 0 : 1)), car.y - 25 + cameraY, 105 * car.direction, 70));
+                        }
+
                     }
                 }
-                else if(l.type == 2)
+                else if (layers[i].type == 2)
                 {
                     // Logs
-                    foreach(Log log in l.logs)
+                    foreach (Log log in layers[i].logs)
                     {
-                        e.Graphics.FillRectangle(new SolidBrush(Color.Brown), log.x, log.y + cameraY, log.width, 40);
+                        // Show different logs for each log width type
+                        if(log.width == 49)
+                        {
+                            e.Graphics.DrawImage(Properties.Resources.logveryshort, log.x, log.y + cameraY + 10);
+                        }
+                        else if (log.width == 77)
+                        {
+                            e.Graphics.DrawImage(Properties.Resources.logshort, log.x, log.y + cameraY + 10);
+                        }
+                        else if (log.width == 105)
+                        {
+                            e.Graphics.DrawImage(Properties.Resources.log, log.x, log.y + cameraY + 10);
+                        }
+                        else if (log.width == 140)
+                        {
+                            e.Graphics.DrawImage(Properties.Resources.loglong, log.x, log.y + cameraY + 10);
+                        }
                     }
                 }
             }
 
-            if (!gameover || (gameover && cameraY + p.y >= this.Height - (p.size / 2) && birdY < p.y + cameraY))
+            if (!gameover || (gameover && cameraY + p.y >= this.Height - (p.size / 2) && birdY < p.y + cameraY) || (distXdir != 0 || distYdir != 0))
             {
                 // Player Rectangle
-                e.Graphics.FillRectangle(new SolidBrush(Color.White), new Rectangle(p.x, p.y + cameraY, p.size, p.size));
+                e.Graphics.DrawImage(Properties.Resources.player, p.x + distX, p.y + distY - 20 + cameraY + pgravityY);
             }
 
             // Bird:
-            e.Graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(p.x - 10, birdY, 20, 80));
-            e.Graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(p.x - 40, birdY + 40, 80, 20));
-            e.Graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(p.x - 40, birdY + 20, 20, 20));
-            e.Graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(p.x + 20, birdY + 20, 20, 20));
-            e.Graphics.FillRectangle(new SolidBrush(Color.White), new Rectangle(p.x - 10, birdY + 60, 20, 20));
-            e.Graphics.FillRectangle(new SolidBrush(Color.Orange), new Rectangle(p.x - 5, birdY + 80, 10, 15));
+            if (gameover)
+            {
+                e.Graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(p.x - 10, birdY, 20, 80));
+                e.Graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(p.x - 40, birdY + 40, 80, 20));
+                e.Graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(p.x - 40, birdY + 20, 20, 20));
+                e.Graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(p.x + 20, birdY + 20, 20, 20));
+                e.Graphics.FillRectangle(new SolidBrush(Color.White), new Rectangle(p.x - 10, birdY + 60, 20, 20));
+                e.Graphics.FillRectangle(new SolidBrush(Color.Orange), new Rectangle(p.x - 5, birdY + 80, 10, 15));
+            }
         }
 
         private void GameScreen_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
@@ -359,6 +480,36 @@ namespace Crossy_Man
             if (!gameover)
             {
                 keys[Convert.ToInt32(e.KeyCode)] = true;
+                if ((keys[38] || keys[39] || keys[37] || keys[40]) && !checkForDie())
+                {
+                    jumping = true;
+                    jumpSound.Play();
+                    pgravity = -5;
+                    pgravityY = 0;
+                    if (keys[37]) { distX = 60; distY = 0; distYdir = 0; distXdir = -1; }
+                    if (keys[39]) { distX = -60; distY = 0; distYdir = 0; distXdir = 1; }
+                    if (keys[38]) { distY = 60; distX = 0; distXdir = 0; distYdir = -1; }
+                    if (keys[40]) { distY = -60; distX = 0; distXdir = 0; distYdir = 1; }
+
+                    if ((!p.canMoveLeft && keys[37]) || (!p.canMoveRight && keys[39]))
+                    {
+                        distX = 0;
+                        distXdir = 0;
+                    }
+                    if ((!p.canMoveUp && keys[38]) || (!p.canMoveDown && keys[40]))
+                    {
+                        distY = 0;
+                        distYdir = 0;
+                    }
+                }
+                else if((keys[38] || keys[39] || keys[37] || keys[40]) && checkForDie())
+                {
+                    gameover = true;
+                    if (deathSoundPlayed == 0)
+                    {
+                        deathSoundPlayed = 1;
+                    }
+                }
                 p.Move(keys[37], keys[39], keys[38], keys[40]);
                 keys[Convert.ToInt32(e.KeyCode)] = false;
             }

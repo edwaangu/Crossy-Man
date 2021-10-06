@@ -106,5 +106,38 @@
   <ItemGroup>
     <None Include="Resources\menubackground.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bluecar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\player.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\logveryshort.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\logshort.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\log.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\loglong.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tree.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\yellowcar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\redcar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\398068__happyparakeet__pixel-death.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\350905__cabled-mess__jump-c-05.wav" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

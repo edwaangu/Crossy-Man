@@ -56,7 +56,7 @@ namespace Crossy_Man
             // 
             // retryButton
             // 
-            this.retryButton.BackColor = System.Drawing.Color.Transparent;
+            this.retryButton.BackColor = System.Drawing.Color.LawnGreen;
             this.retryButton.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.retryButton.FlatAppearance.BorderSize = 5;
             this.retryButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
@@ -74,7 +74,7 @@ namespace Crossy_Man
             // 
             // menuButton
             // 
-            this.menuButton.BackColor = System.Drawing.Color.Transparent;
+            this.menuButton.BackColor = System.Drawing.Color.LawnGreen;
             this.menuButton.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.menuButton.FlatAppearance.BorderSize = 5;
             this.menuButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;

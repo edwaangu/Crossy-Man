@@ -8,6 +8,7 @@ namespace Crossy_Man
 {
     class Log
     {
+        // Initalize log variables
         public int x, y, width, speed, direction;
         public Log(int _x, int _y, int _width, int _speed, int _direction)
         {
@@ -20,6 +21,7 @@ namespace Crossy_Man
 
         public void Move()
         {
+            // Move the log in it's specfied direction
             x += speed * direction;
         }
     }

@@ -8,6 +8,7 @@ namespace Crossy_Man
 {
     class Car
     {
+        // Initalize car variables
         public int x, y, width, direction, speed, type;
 
         public Car(int _x, int _y, int _width, int _direction, int _speed, int _type)
@@ -22,6 +23,7 @@ namespace Crossy_Man
         
         public void Move()
         {
+            // Move the car
             x += speed * direction;
         }
     }
