@@ -48,6 +48,8 @@ namespace Crossy_Man
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            FormBorderStyle = FormBorderStyle.None;
+            WindowState = FormWindowState.Maximized;
             MenuScreen ms = new MenuScreen();
             this.Controls.Add(ms);
         }
