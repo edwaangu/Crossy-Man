@@ -40,7 +40,7 @@ namespace Crossy_Man
         }
 
         private void playButton_Enter(object sender, EventArgs e)
-        {
+        { //play button
             playButton.FlatAppearance.BorderSize = 10;
             exitButton.FlatAppearance.BorderSize = 5;
         }
