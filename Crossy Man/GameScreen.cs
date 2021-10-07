@@ -171,6 +171,11 @@ namespace Crossy_Man
 
         private void GameScreen_Load(object sender, EventArgs e)
         {
+            // Center the screen
+            Form f = this.FindForm();
+            this.Focus(); // focus
+            this.Location = new Point((f.Width - 1280) / 2, (f.Height - 720) / 2);
+
             // Run the setupGame function
             setupGame();
         }
