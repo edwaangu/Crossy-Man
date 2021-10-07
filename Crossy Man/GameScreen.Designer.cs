@@ -59,7 +59,7 @@ namespace Crossy_Man
             this.retryButton.BackColor = System.Drawing.Color.LawnGreen;
             this.retryButton.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.retryButton.FlatAppearance.BorderSize = 5;
-            this.retryButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.retryButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Green;
             this.retryButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.retryButton.Font = new System.Drawing.Font("Microsoft YaHei UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.retryButton.ForeColor = System.Drawing.Color.White;
@@ -77,7 +77,7 @@ namespace Crossy_Man
             this.menuButton.BackColor = System.Drawing.Color.LawnGreen;
             this.menuButton.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.menuButton.FlatAppearance.BorderSize = 5;
-            this.menuButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.menuButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Green;
             this.menuButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.menuButton.Font = new System.Drawing.Font("Microsoft YaHei UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.menuButton.ForeColor = System.Drawing.Color.White;

@@ -49,10 +49,10 @@ namespace Crossy_Man
             // 
             // playButton
             // 
-            this.playButton.BackColor = System.Drawing.Color.Transparent;
+            this.playButton.BackColor = System.Drawing.Color.LawnGreen;
             this.playButton.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.playButton.FlatAppearance.BorderSize = 5;
-            this.playButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.playButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Green;
             this.playButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.playButton.Font = new System.Drawing.Font("Microsoft YaHei UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.playButton.ForeColor = System.Drawing.Color.White;
@@ -67,10 +67,10 @@ namespace Crossy_Man
             // 
             // exitButton
             // 
-            this.exitButton.BackColor = System.Drawing.Color.Transparent;
+            this.exitButton.BackColor = System.Drawing.Color.LawnGreen;
             this.exitButton.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.exitButton.FlatAppearance.BorderSize = 5;
-            this.exitButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.exitButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Green;
             this.exitButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.exitButton.Font = new System.Drawing.Font("Microsoft YaHei UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.exitButton.ForeColor = System.Drawing.Color.White;
